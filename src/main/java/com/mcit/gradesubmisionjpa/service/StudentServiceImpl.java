@@ -3,7 +3,9 @@ package com.mcit.gradesubmisionjpa.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.mcit.gradesubmisionjpa.entity.Course;
 import com.mcit.gradesubmisionjpa.entity.Student;
+import com.mcit.gradesubmisionjpa.exception.CourseNotFoundException;
 import com.mcit.gradesubmisionjpa.exception.StudentNotFoundException;
 import com.mcit.gradesubmisionjpa.repository.StudentRepository;
 import lombok.AllArgsConstructor;
@@ -15,11 +17,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student getStudent(Long id) {
         Optional<Student> student = studentRepository.findById(id);
-        if (student.isPresent()){
-            return student.get();
-        }else {
-            throw new StudentNotFoundException(id);
-        }
+        return unwrapStudent(student, id);
     }
 
     @Override
@@ -36,5 +34,8 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> getStudents() {
         return (List<Student>) studentRepository.findAll();
     }
-
+    static Student unwrapStudent(Optional<Student> entity, Long id){
+        if (entity.isPresent()) return entity.get();
+        else throw new StudentNotFoundException(id);
+    }
 }

@@ -16,11 +16,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course getCourse(Long id) {
         Optional<Course> course = courseRepository.findById(id);
-        if (course.isPresent()){
-            return course.get();
-        }else {
-            throw new CourseNotFoundException(id);
-        }
+        return unwrapCourse(course, id);
     }
 
     @Override
@@ -37,5 +33,8 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> getCourses() {
         return (List<Course>) courseRepository.findAll();
     }
-
+    static Course unwrapCourse(Optional<Course> entity, Long id){
+        if (entity.isPresent()) return entity.get();
+        else throw new CourseNotFoundException(id);
+    }
 }
