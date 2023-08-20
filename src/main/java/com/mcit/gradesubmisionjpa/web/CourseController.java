@@ -1,5 +1,7 @@
 package com.mcit.gradesubmisionjpa.web;
 
+import com.mcit.gradesubmisionjpa.service.CourseService;
+import com.mcit.gradesubmisionjpa.service.CourseServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,25 +20,27 @@ import java.util.List;
 @RestController
 @RequestMapping("/course")
 public class CourseController {
+    CourseService courseService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourse(@PathVariable Long id) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getCourse(id), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Course> saveCourse(@RequestBody Course course) {
-        return new ResponseEntity<>(course, HttpStatus.CREATED);
+        return new ResponseEntity<>(courseService.saveCourse(course), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteCourse(@PathVariable Long id) {
+        courseService.deleteCourse(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<Course>> getCourses() {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getCourses(), HttpStatus.OK);
     }
 
 }

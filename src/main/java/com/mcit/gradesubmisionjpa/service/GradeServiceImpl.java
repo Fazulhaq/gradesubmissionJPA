@@ -2,8 +2,10 @@ package com.mcit.gradesubmisionjpa.service;
 
 import java.util.List;
 
+import com.mcit.gradesubmisionjpa.entity.Course;
 import com.mcit.gradesubmisionjpa.entity.Grade;
 import com.mcit.gradesubmisionjpa.entity.Student;
+import com.mcit.gradesubmisionjpa.repository.CourseRepository;
 import com.mcit.gradesubmisionjpa.repository.GradeRepository;
 import com.mcit.gradesubmisionjpa.repository.StudentRepository;
 import lombok.AllArgsConstructor;
@@ -15,22 +17,27 @@ public class GradeServiceImpl implements GradeService {
 
     private GradeRepository gradeRepository;
     private StudentRepository studentRepository;
+    private CourseRepository courseRepository;
     
     @Override
     public Grade getGrade(Long studentId, Long courseId) {
-        return gradeRepository.findByStudentId(studentId);
+        return gradeRepository.findByStudentIdAndCourseId(studentId, courseId);
     }
 
     @Override
     public Grade saveGrade(Grade grade, Long studentId, Long courseId) {
         Student student = studentRepository.findById(studentId).get();
+        Course course = courseRepository.findById(courseId).get();
         grade.setStudent(student);
+        grade.setCourse(course);
         return gradeRepository.save(grade);
     }
 
     @Override
     public Grade updateGrade(String score, Long studentId, Long courseId) {
-        return null;
+        Grade grade = gradeRepository.findByStudentIdAndCourseId(studentId, courseId);
+        grade.setScore(score);
+        return gradeRepository.save(grade);
     }
 
     @Override

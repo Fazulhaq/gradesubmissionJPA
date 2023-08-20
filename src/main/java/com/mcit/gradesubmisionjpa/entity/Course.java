@@ -1,23 +1,32 @@
 package com.mcit.gradesubmisionjpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "course")
 @Setter
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @Column(name = "subject")
+    @NonNull
+    @Column(name = "subject", nullable = false)
     private String subject;
-    @Column(name = "code")
+    @NonNull
+    @Column(name = "code", nullable = false)
     private String code;
-    @Column(name = "description")
+    @NonNull
+    @Column(name = "description", nullable = false)
     private String description;
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Grade> grades;
 
 }
