@@ -1,10 +1,12 @@
 package com.mcit.gradesubmisionjpa.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.mcit.gradesubmisionjpa.entity.Course;
 import com.mcit.gradesubmisionjpa.entity.Grade;
 import com.mcit.gradesubmisionjpa.entity.Student;
+import com.mcit.gradesubmisionjpa.exception.GradeNotFoundException;
 import com.mcit.gradesubmisionjpa.repository.CourseRepository;
 import com.mcit.gradesubmisionjpa.repository.GradeRepository;
 import com.mcit.gradesubmisionjpa.repository.StudentRepository;
@@ -21,7 +23,12 @@ public class GradeServiceImpl implements GradeService {
     
     @Override
     public Grade getGrade(Long studentId, Long courseId) {
-        return gradeRepository.findByStudentIdAndCourseId(studentId, courseId);
+        Optional<Grade> grade = gradeRepository.findByStudentIdAndCourseId(studentId, courseId);
+        if (grade.isPresent()){
+            return grade.get();
+        }else {
+            throw new GradeNotFoundException(studentId, courseId);
+        }
     }
 
     @Override
@@ -35,9 +42,14 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public Grade updateGrade(String score, Long studentId, Long courseId) {
-        Grade grade = gradeRepository.findByStudentIdAndCourseId(studentId, courseId);
-        grade.setScore(score);
-        return gradeRepository.save(grade);
+        Optional<Grade> grade = gradeRepository.findByStudentIdAndCourseId(studentId, courseId);
+        if (grade.isPresent()){
+            Grade unwrapedGrade = grade.get();
+            unwrapedGrade.setScore(score);
+            return gradeRepository.save(unwrapedGrade);
+        }else {
+            throw new GradeNotFoundException(studentId, courseId);
+        }
     }
 
     @Override
