@@ -2,6 +2,7 @@ package com.mcit.gradesubmisionjpa.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.mcit.gradesubmisionjpa.entity.Course;
 import com.mcit.gradesubmisionjpa.entity.Student;
@@ -34,6 +35,13 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> getStudents() {
         return (List<Student>) studentRepository.findAll();
     }
+
+    @Override
+    public Set<Course> getEnrolledCourses(Long studentId) {
+        Student student = getStudent(studentId);
+        return student.getCourses();
+    }
+
     static Student unwrapStudent(Optional<Student> entity, Long id){
         if (entity.isPresent()) return entity.get();
         else throw new StudentNotFoundException(id);

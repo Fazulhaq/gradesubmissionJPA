@@ -1,5 +1,6 @@
 package com.mcit.gradesubmisionjpa.web;
 
+import com.mcit.gradesubmisionjpa.entity.Course;
 import com.mcit.gradesubmisionjpa.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mcit.gradesubmisionjpa.entity.Student;
 
 import java.util.List;
+import java.util.Set;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/student")
@@ -38,7 +41,10 @@ public class StudentController {
         studentService.deleteStudent(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
+    @GetMapping("/{studentId}/courses")
+    public ResponseEntity<Set<Course>> getEnrolledCourses(@PathVariable Long studentId){
+        return new ResponseEntity<>(studentService.getEnrolledCourses(studentId), HttpStatus.OK);
+    }
     @GetMapping("/all")
     public ResponseEntity<List<Student>> getStudents() {
         return new ResponseEntity<>(studentService.getStudents(), HttpStatus.OK);

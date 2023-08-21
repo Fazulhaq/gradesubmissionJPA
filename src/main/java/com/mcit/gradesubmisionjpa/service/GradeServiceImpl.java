@@ -8,6 +8,7 @@ import com.mcit.gradesubmisionjpa.entity.Grade;
 import com.mcit.gradesubmisionjpa.entity.Student;
 import com.mcit.gradesubmisionjpa.exception.CourseNotFoundException;
 import com.mcit.gradesubmisionjpa.exception.GradeNotFoundException;
+import com.mcit.gradesubmisionjpa.exception.StudentNotEnrolledException;
 import com.mcit.gradesubmisionjpa.repository.CourseRepository;
 import com.mcit.gradesubmisionjpa.repository.GradeRepository;
 import com.mcit.gradesubmisionjpa.repository.StudentRepository;
@@ -32,6 +33,7 @@ public class GradeServiceImpl implements GradeService {
     public Grade saveGrade(Grade grade, Long studentId, Long courseId) {
         Student student = StudentServiceImpl.unwrapStudent(studentRepository.findById(studentId), studentId);
         Course course = CourseServiceImpl.unwrapCourse(courseRepository.findById(courseId), courseId);
+        if (!student.getCourses().contains(course)) throw new StudentNotEnrolledException(studentId, courseId);
         grade.setStudent(student);
         grade.setCourse(course);
         return gradeRepository.save(grade);
